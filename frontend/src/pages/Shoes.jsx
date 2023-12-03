@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
  import axios from 'axios';
 import { Link } from 'react-router-dom';
+
 const Shoes = () => {
 
     const [shoes, setShoes] = useState([])
@@ -17,6 +18,18 @@ const Shoes = () => {
         }
         fetchAllShoes()
     }, [])
+
+    const handleDelete = async(shoe_id) => {
+        try {
+            await axios.delete("http://localhost:8800/shoes/"  + shoe_id);
+            window.location.reload()
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+
     return (
         <div> 
             <h1>Marketplace</h1>
@@ -27,6 +40,8 @@ const Shoes = () => {
                         <h2> {shoe.shoe_name}</h2>
                         <p> {shoe.shoe_desc} </p>
                         <span>{shoe.shoe_price}</span>
+                        <button className='delete' onClick={()=>handleDelete(shoe.shoe_id)}>Delete</button>
+                        <button className='update'><Link to={`/update/${shoe.shoe_id}`}>Update</Link></button>
                     </div>
                 ))}
             </div>

@@ -29,7 +29,7 @@ app.get("/shoes", (req, res) => {
     })
 })
 app.post("/shoes", (req, res) => {
-    const q = "INSERT INTO `shoes` (`shoe_id`, `shoe_name`, `shoe_desc`, `shoe_img`) VALUES(?)";
+    const q = "INSERT INTO `shoes` (`shoe_name`, `shoe_desc`, `shoe_img`, `shoe_price`) VALUES(?)";
     // const values = [
     //     "004",
     //     "Socks",
@@ -37,15 +37,42 @@ app.post("/shoes", (req, res) => {
     //     "item_4.png"
     // ];
     const values = [
-        req.body.shoe_id,
         req.body.shoe_name,
         req.body.shoe_desc,
-        req.body.shoe_img
+        req.body.shoe_img,
+        req.body.shoe_price
     ];
     db.query(q, [values], (err, data) => {
         if(err) return res.json(err)
         return res.json("Successful insertion.")
     });
+})
+
+app.delete("/shoes/:shoe_id", (req, res) => {
+    const shoeID = req.params.shoe_id;
+    const q = "DELETE FROM shoes WHERE shoe_id = ?";
+    console.log(shoeID)
+    db.query(q, [shoeID], (err, data) => {
+        if (err) return res.json(err)
+        return res.json("Successfully deleted");
+    
+    })
+})
+
+app.put("/shoes/:shoe_id", (req, res) => {
+    const shoeID = req.params.shoe_id;
+    const q = "UPDATE shoes SET `shoe_name` =?, `shoe_desc`=?, `shoe_img`=?, `shoe_price`=? WHERE shoe_id=?";
+    const values = [
+        req.body.shoe_name,
+        req.body.shoe_desc,
+        req.body.shoe_img,
+        req.body.shoe_price
+    ];
+    db.query(q, [...values, shoeID], (err, data) => {
+        if (err) return res.json(err)
+        return res.json("Item updated");
+    
+    })
 })
 
 app.listen(8800, () => {
